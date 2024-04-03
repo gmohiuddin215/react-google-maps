@@ -28,6 +28,8 @@ type AdvancedMarkerEventProps = {
   onDrag?: (e: google.maps.MapMouseEvent) => void;
   onDragStart?: (e: google.maps.MapMouseEvent) => void;
   onDragEnd?: (e: google.maps.MapMouseEvent) => void;
+  onMouseOver?: (e: google.maps.MapMouseEvent) => void;
+  onMouseOut?: (e: google.maps.MapMouseEvent) => void;
 };
 
 export type AdvancedMarkerProps = PropsWithChildren<
@@ -63,7 +65,9 @@ function useAdvancedMarker(props: AdvancedMarkerProps) {
     draggable,
     position,
     title,
-    zIndex
+    zIndex,
+    onMouseOver,
+    onMouseOut
   } = props;
 
   const numChilds = Children.count(children);
@@ -115,6 +119,8 @@ function useAdvancedMarker(props: AdvancedMarkerProps) {
     if (onDrag) gme.addListener(marker, 'drag', onDrag);
     if (onDragStart) gme.addListener(marker, 'dragstart', onDragStart);
     if (onDragEnd) gme.addListener(marker, 'dragend', onDragEnd);
+    if (onMouseOver) gme.addListener(marker, 'mouseover', onMouseOver);
+    if (onMouseOut) gme.addListener(marker, 'mouseout', onMouseOut);
 
     if ((onDrag || onDragStart || onDragEnd) && !draggable) {
       console.warn(
@@ -138,7 +144,7 @@ function useAdvancedMarker(props: AdvancedMarkerProps) {
       marker.collisionBehavior = collisionBehavior;
     if (zIndex !== undefined) marker.zIndex = zIndex;
     if (typeof title === 'string') marker.title = title;
-  }, [marker, position, draggable, collisionBehavior, zIndex, title]);
+  }, [marker, position, draggable, collisionBehavior, zIndex, title, onMouseOver, onMouseOut]);
 
   return [marker, contentContainer] as const;
 }
